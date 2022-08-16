@@ -1,0 +1,32 @@
+#instalar vnc
+sudo apt-get -y install x11vnc
+
+#Crie um diretório para o serviço VNC
+sudo mkdir /etc/x11vnc
+
+#Agora crie uma senha criptografada para o arquivo VNC:
+x11vnc --storepasswd /etc/x11vnc/vncpwd
+
+#criar um arquivo de serviço de sistema para o serviço VNC:
+xed /lib/systemd/system/x11vnc.service
+
+#dentro da tela do programa x11vnc Digite esta linha no arquivo de configuração:
+[Unit]
+Description=Start x11vnc at startup.
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/x11vnc -auth guess -forever -noxdamage -repeat -rfbauth /etc/x11vnc/vncpwd -rfbport 5900 –shared
+
+[Install]
+WantedBy=multi-user.target
+
+#Agora recarregue o serviço
+systemctl daemon-reload
+
+agora habilitar o serviço VNC
+systemctl enable x11vnc.service
+
+Agora inicie o serviço VNC
+systemctl start x11vnc.service
